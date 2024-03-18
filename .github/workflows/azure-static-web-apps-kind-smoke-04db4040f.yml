@@ -22,6 +22,9 @@ jobs:
           lfs: false
       - name: Build App
         run: |
+            cd node_modules/.bin
+            ls -l craco
+            chmod +x craco
             npm install @craco/craco
             npm install
             npm start dev
