@@ -1,0 +1,28 @@
+name: "DESTROY PLAN" ## Workflow name
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_variable_group: # Environment need to be selected on workflow dispatch
+        type: choice
+        description: Make a choice
+        options:
+          - DEV
+          - UAT
+          - PROD
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  destroy-plan:
+    name: Terraform Destroy Plan
+    uses: northerntrust-internal/apm0003302-azr-nextgen-modules/.github/workflows/terraform_destroy_plan.yaml@main
+    with:
+      environment_variable_group: ${{ inputs.environment_variable_group }}
+      github_runner: cus-dev-iac-lnx-u20
+    secrets: inherit
+
+

@@ -1,0 +1,146 @@
+# name: "Static Web App Build and Deploy" ## Workflow name
+
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - main   
+#   pull_request:
+#     branches:
+#       - main       
+     
+ 
+# permissions:
+#   id-token: write
+#   contents: read
+#   pull-requests: write
+
+# jobs:   
+#   dev-app-build:
+#     name: DEV Build App
+#     runs-on: [ubuntu-latest]
+#     environment: DEV
+#    # if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'   
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+#         # with:
+#         #   token: ${{ secrets.GITHUB_TOKEN}}
+
+#       - name: Install Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 16
+#           #cache: "npm"
+#           #cache-dependency-path: "**/package-lock.json"
+
+      # - name: Cache Node modules
+      #   id: cache-npm
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-node-modules
+      #   with:
+      #     path: |
+      #       ~/.npm
+      #       **/node_modules
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{env.cache-name}} -
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
+      - name: config NPM Registry
+        run: |   
+          node --version
+          npm --version
+      # npm config set registry=https://repository.ntrs.com:8444/nexus/content/groups/npm-group/
+      # npm config set proxy=https://:@global-zia-proxy.ntrs.com:9443/
+      # npm config set noproxy=repository.ntrs.com
+      
+      - name: Installing dependencies
+        #if: ${{ steps.cache-npm.outputs.cache-hit != 'true'}}
+        run: |
+          npm config list
+          npm install
+          
+      # - name: Run tests
+      #   run: npm run test
+
+      - name: Build App
+        run: npm run build
+      
+
+  # dev-tf-plan:
+  #   name: DEV Terraform Plan
+  #   uses: https://github.com/cloudbicep-frontend/cbtfconfig/.github/workflows/terraform_init_plan_scan.yaml@main
+  #   with:
+  #     environment_variable_group: DEV
+  #     github_runner: cus-dev-iac-lnx-u20
+  #   secrets: inherit   
+
+  # dev-tf-apply:
+  #   name: DEV Terraform Apply
+  #   needs: [dev-tf-plan, dev-app-build]
+  #   if: github.ref == 'refs/heads/main'
+  #   uses: https://github.com/cloudbicep-frontend/cbtfconfig/.github/workflows/terraform_init_plan_scan.yaml@main
+  #   with:
+  #     environment_variable_group: DEV
+  #     github_runner: cus-dev-iac-lnx-u20
+  #   secrets: inherit
+  
+            
+  # dev-app-deploy:
+  #   name: DEV Deploy App
+  #   env:
+  #     ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #     ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     TF_VAR_github_repository_token: ${{ secrets.GIT_PAT }}
+  #     TF_OUTPUTS: ${{ needs.dev-tf-apply.outputs.tf_outputs }}
+  #     NODE_VERSION: 16
+  #   if: github.ref == 'refs/heads/main'
+  #   needs: [dev-app-build, dev-tf-apply]    
+  #   runs-on: [self-hosted, cus-dev-iac-lnx-u20]
+  #   environment: DEV
+  #   steps:
+  #     - name: 'Checkout GitHub Action'
+  #       uses: actions/checkout@v3
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN}}
+
+  #     - name: Setup Node ${{ env.NODE_VERSION }} Environment
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #     - name: Install SWA cli
+  #       run: |   
+  #         node --version
+  #         npm --version
+  #         npm config set proxy null
+  #         npm config set https-proxy null
+  #         npm config set registry=https://registry.npmjs.org/
+  #         npm install -g @azure/static-web-apps-cli
+         
+  #     - name: Update Configs
+  #       id: update-configs
+  #       run: |
+          
+  #         export FRONT_DOOR_ID=$(echo $TF_OUTPUTS | jq -r '.front_door_id.value')
+  #         export FRONT_DOOR_HOSTNAME=$(echo $TF_OUTPUTS | jq -r '.front_door_endpoint_hostname.value')   
+  #         echo "AZURE_STORAGE_ACCT_NAME=$(echo $TF_OUTPUTS | jq -r '.storage_account_name.value')" >> $GITHUB_OUTPUT       
+  #         echo "FRONT_DOOR_HOSTNAME=$FRONT_DOOR_HOSTNAME" >> $GITHUB_OUTPUT
+  #         export FRONT_DOOR_API_KEY=$(echo $TF_OUTPUTS | jq -r '.front_door_endpoint_hostname.value')
+  #         jq --arg front_door_id "$FRONT_DOOR_ID" '.forwardingGateway.requiredHeaders."X-Azure-FDID" = $front_door_id' staticwebapp.config.json | \
+  #         jq --arg front_door_hostname "$FRONT_DOOR_HOSTNAME" '.forwardingGateway.allowedForwardedHosts[0] = $front_door_hostname' > temp.json
+
+  #         mv temp.json staticwebapp.config.json
+  #         cat staticwebapp.config.json
+      
+  #     - name: Build And Deploy to Dev
+  #       id: builddeploy
+  #       env: 
+  #         REACT_APP_API_BACKEND: "https://${{ steps.update-configs.outputs.AZURE_STORAGE_ACCT_NAME }}.blob.core.windows.net"
+  #         SWA_CLI_DEPLOYMENT_TOKEN : ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+  #       run: |
+  #         npm ci
+  #         swa build                  
+  #         swa deploy --app-location . --env production
