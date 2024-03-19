@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet'
 import FeatureCard from '../components/feature-card'
 import Question1 from '../components/question1'
 import './home.css'
-import logo from '../public/cloudbiceplogo.png'
+//import logo from '../public/cloudbiceplogo.png'
+import logo from `${process.env.PUBLIC_URL}/cloudbiceplogo.png`;
 
 const Home = (props) => {
   return (
@@ -19,7 +20,6 @@ const Home = (props) => {
           data-thq="thq-navbar"
           className="navbarContainer home-navbar-interactive"
         >
-         // <span className="logo">cloudBicep Technologies Pvt Ltd</span>
           <span className="logo">
              <img src={logo} alt="CloudBicep Logo" style={{ marginRight: '8px' }} />
               cloudBicep Technologies Pvt Ltd
@@ -48,7 +48,9 @@ const Home = (props) => {
           >
             <div className="home-nav">
               <div className="home-top">
-                <span className="logo">CLOUDIFY</span>
+                <span className="logo">
+                <img src={logo} alt="CloudBicep Logo" style={{ marginRight: '8px' }} />
+                  CLOUDBICEP Technologies Private Limited</span>
                 <div data-thq="thq-close-menu" className="home-close-menu">
                   <svg
                     viewBox="0 0 1024 1024"
