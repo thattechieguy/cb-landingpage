@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import FeatureCard from '../components/feature-card'
 import Question1 from '../components/question1'
 import './home.css'
-import logo from '../public/logo.png'
+import logo from '../public/cloudbiceplogo.png'
 
 const Home = (props) => {
   return (
