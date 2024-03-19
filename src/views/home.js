@@ -22,7 +22,7 @@ const Home = (props) => {
         >
           <span className="logo">
              <img src={logo} alt="CloudBicep Logo" style={{ marginRight: '8px' }} />
-              cloudBicep Technologies Pvt Ltd
+              CloudBicep Technologies Pvt Ltd
           </span>
           <div data-thq="thq-navbar-nav" className="home-desktop-menu">
             <nav className="home-links">
@@ -48,9 +48,10 @@ const Home = (props) => {
           >
             <div className="home-nav">
               <div className="home-top">
-                <span className="logo">
+                <div className="logo">
                 <img src={logo} alt="CloudBicep Logo" style={{ marginRight: '8px' }} />
-                  CLOUDBICEP Technologies Private Limited</span>
+                  CLOUDBICEP Technologies Private Limited
+                </div>
                 <div data-thq="thq-close-menu" className="home-close-menu">
                   <svg
                     viewBox="0 0 1024 1024"
