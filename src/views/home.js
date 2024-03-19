@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet'
 import FeatureCard from '../components/feature-card'
 import Question1 from '../components/question1'
 import './home.css'
+import logo from '../public/logo.png'
 
 const Home = (props) => {
   return (
@@ -18,7 +19,11 @@ const Home = (props) => {
           data-thq="thq-navbar"
           className="navbarContainer home-navbar-interactive"
         >
-          <span className="logo">cloudBicep Technologies Pvt Ltd</span>
+         // <span className="logo">cloudBicep Technologies Pvt Ltd</span>
+          <span className="logo">
+             <img src={logo} alt="CloudBicep Logo" style={{ marginRight: '8px' }} />
+              cloudBicep Technologies Pvt Ltd
+          </span>
           <div data-thq="thq-navbar-nav" className="home-desktop-menu">
             <nav className="home-links">
               <span className="bodySmall">Home</span>
